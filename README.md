@@ -182,8 +182,8 @@ sequenceDiagram
 ### 1. Repoyu Klonlayın
 
 ```bash
-git clone https://github.com/KULLANICI_ADINIZ/ai-call-center-assistant.git
-cd ai-call-center-assistant
+git clone https://github.com/BerkayBilgenn/Otonom.git
+cd Otonom
 ```
 
 ### 2. Sanal Ortam Oluşturun
