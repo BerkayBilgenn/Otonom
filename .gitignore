@@ -1,0 +1,44 @@
+# ── Python ──────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+venv/
+env/
+.venv/
+
+# ── Environment & Secrets ──────────
+.env
+.env.local
+.env.production
+credentials.json
+token.json
+
+# ── AI Models (large files) ────────
+backend/models/
+*.bin
+*.safetensors
+*.gguf
+
+# ── IDE ────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── OS ─────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Embedded Repos ─────────────────
+backend/Hunyuan-PromptEnhancer/
+
+# ── Agent/Tool ─────────────────────
+.agent/

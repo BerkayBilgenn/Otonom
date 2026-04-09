@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çağrı Merkezi Asistanı — AI Sesli Randevu Sistemi</title>
+    <meta name="description" content="Yapay zeka destekli sesli randevu asistanı. Takvim kontrolü, randevu planlama ve müsaitlik sorgulama.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <!-- Animated Particle Grid Background -->
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+    <!-- Ambient Glow Orbs -->
+    <div class="ambient-layer" aria-hidden="true">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="orb orb-4"></div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="app-shell">
+
+        <!-- Sidebar / Nav -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">Çağrı Merkezi</span>
+                    <span class="brand-sub">AI Asistanı</span>
+                </div>
+            </div>
+
+            <div class="sidebar-menu">
+                <button class="sidebar-item active" id="nav-chat" data-panel="chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" /></svg>
+                    <span>Sohbet</span>
+                </button>
+                <button class="sidebar-item" id="nav-calendar" data-panel="calendar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
+                    <span>Takvim</span>
+                </button>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="connection-status">
+                    <span class="status-dot online"></span>
+                    <span>Sistem Aktif</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Header -->
+        <header class="mobile-header" id="mobile-header">
+            <button class="hamburger" id="hamburger-btn" aria-label="Menü aç/kapat">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="mobile-brand">
+                <span class="brand-icon-sm">📞</span>
+                Çağrı Merkezi Asistanı
+            </div>
+            <div class="mobile-status">
+                <span class="status-dot online"></span>
+            </div>
+        </header>
+
+        <!-- ============================================ -->
+        <!-- CHAT PANEL                                   -->
+        <!-- ============================================ -->
+        <main class="chat-panel" id="panel-chat">
+
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <div class="chat-header-left">
+                    <div class="avatar-ring">
+                        <div class="avatar-inner">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="chat-title">Çağrı Merkezi Asistanı</h1>
+                        <p class="chat-subtitle" id="chat-subtitle">Randevu • Takvim • Sesli Asistan</p>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <div class="live-waveform" id="live-waveform">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <section id="chat-container" class="chat-messages">
+                <div class="chat-welcome">
+                    <div class="welcome-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                    </div>
+                    <h2>Merhaba! 👋</h2>
+                    <p>Çağrı Merkezi Asistanınız hazır. Size nasıl yardımcı olabilirim?</p>
+                    <div class="quick-actions">
+                        <button class="quick-btn" data-msg="Yarın müsait saatleri göster">
+                            <span class="quick-icon">📅</span>
+                            Müsait Saatler
+                        </button>
+                        <button class="quick-btn" data-msg="Yarın saat 14:00'te randevu almak istiyorum">
+                            <span class="quick-icon">🕐</span>
+                            Randevu Al
+                        </button>
+                        <button class="quick-btn" data-msg="Randevumu iptal etmek istiyorum">
+                            <span class="quick-icon">❌</span>
+                            Randevu İptal
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Status Bar -->
+            <div id="status-bar" class="status-bar">
+                <div class="status-inner">
+                    <span class="status-indicator"></span>
+                    <span id="status-text">Mikrofona basarak veya yazarak konuşmaya başlayın</span>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="mic-wrapper">
+                    <div id="pulse-ring-1" class="pulse-ring hidden"></div>
+                    <div id="pulse-ring-2" class="pulse-ring hidden" style="animation-delay: 0.4s;"></div>
+                    <button id="mic-button" class="mic-btn" aria-label="Mikrofonu aç/kapat">
+                        <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+                        </svg>
+                        <svg id="stop-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24" class="hidden">
+                            <rect x="6" y="6" width="12" height="12" rx="2" />
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="text-form" class="text-form">
+                    <div class="input-glass">
+                        <input
+                            id="text-input"
+                            type="text"
+                            placeholder="Mesajınızı yazın..."
+                            autocomplete="off"
+                        />
+                        <button id="send-button" type="submit" class="send-btn" aria-label="Gönder">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- ============================================ -->
+        <!-- CALENDAR PANEL                               -->
+        <!-- ============================================ -->
+        <main class="calendar-panel hidden" id="panel-calendar">
+
+            <!-- Calendar Header -->
+            <div class="chat-header">
+                <div class="chat-header-left">
+                    <div class="avatar-ring">
+                        <div class="avatar-inner" style="color: var(--emerald);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="chat-title">Takvim</h1>
+                        <p class="chat-subtitle">Yaklaşan Randevularınız</p>
+                    </div>
+                </div>
+                <div class="chat-header-actions">
+                    <button class="refresh-btn" id="refresh-calendar" aria-label="Yenile">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M2.985 19.644l3.181-3.182" /></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar Content -->
+            <div class="calendar-content" id="calendar-content">
+                <div class="calendar-loading" id="calendar-loading">
+                    <div class="thinking-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <p>Randevular yükleniyor...</p>
+                </div>
+                <div class="calendar-list" id="calendar-list"></div>
+                <div class="calendar-empty hidden" id="calendar-empty">
+                    <div class="empty-icon">📅</div>
+                    <h3>Randevu Bulunamadı</h3>
+                    <p>Henüz yaklaşan bir randevunuz yok. Sohbet panelinden yeni randevu oluşturabilirsiniz.</p>
+                    <button class="quick-btn" id="go-to-chat-btn">
+                        <span class="quick-icon">💬</span>
+                        Sohbete Dön
+                    </button>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Overlay for Mobile Sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
